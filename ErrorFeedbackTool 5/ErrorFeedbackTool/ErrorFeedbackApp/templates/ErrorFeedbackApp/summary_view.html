@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Summary</title>
+<style>
+    /* Add table styling */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+</head>
+<body>
+<h1>Summary</h1>
+<table>
+  <tr>
+    <th>Center Location</th>
+    <th>Total Errors</th>
+    <th>Accepted</th>
+    <th>Rejected</th>
+    <th>Not Acknowledged</th>
+  </tr>
+  {% for center, counts in summary_counts.items %}
+  <tr>
+    <td>{{ center }}</td>
+    <td>{{ counts.Total }}</td>
+    <td>{{ counts.Accepted }}</td>
+    <td>{{ counts.Rejected.Count }}</td>
+    <td>{{ counts.NotAcknowledged }}</td>
+  </tr>
+  {% endfor %}
+</table>
+</body>
+</html>

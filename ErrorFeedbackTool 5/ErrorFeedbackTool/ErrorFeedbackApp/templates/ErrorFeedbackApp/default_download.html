@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin</title>
+{% load static %}
+{% include 'ErrorFeedbackApp/header.html' %}
+
+<style>
+ body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: white;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid black;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Divide into two equal columns */
+    gap: 20px; /* Adjust gap between columns */
+    padding: 20px;
+}
+
+.dropdown {
+    width: 100px;
+    padding: 5px;
+}
+
+.main-content-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.main-content-table th,
+.main-content-table td {
+    border: 1px solid #ccc;
+    padding: 7px;
+    text-align: left;
+	font-size:15px;
+    font-weight: normal;
+}
+.menu-bar ul li.selected a {
+    color: #274554;
+    font-weight: bold; /* Example: make the text bold */
+}
+.search-container {
+    padding:2px;
+    display: flex;
+    justify-content: flex-left;
+    align-items: flex-left;
+	margin-top:10px;
+}
+
+.search-bar {
+    width: 300px;
+    padding: 5px;
+    margin-right: 10px;
+	margin-left:20px;
+}
+
+.search-container label {
+    font-size: 15px;
+    margin-right: 10px;
+	margin-top: 5px;
+	margin-left: 10px;
+}
+
+.search-container input[type="date"] {
+    width: 150px;
+    height: auto;
+    font-size: 18px;
+    margin-right: 10px;
+	
+}
+
+.search-container button {
+    width: 100px;
+    height: auto;
+    font-size: 18px;
+    border-radius: 5px;
+    margin-right: 20px;
+	background: linear-gradient(to right, #B5D558, #42748D); 
+        color: white;
+        border: none;
+        cursor: pointer;
+    transition: background-color 0.3s;
+	
+}
+
+.search-container button:hover {
+    background-color: #0056b3;
+}
+.download-container {
+    display: flex;
+    align-items: center;
+}
+
+.download-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto; 
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
+    background-color: #497A8A; 
+    transition: background-color 0.3s; 
+}
+
+.download-button:hover {
+    background-color: #B5D558; 
+	transform: translateY(-2px); 
+
+}
+td a {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.download-button img {
+    width: 20px; /* Adjust icon size as needed */
+    height: 20px; /* Adjust icon size as needed */
+}
+</style>
+</head>
+<body>
+<header>
+	
+ <div class="menu-bar">
+    <ul>
+        <li ><a href="{% url 'default' %}">Home</a></li>
+        <li class="selected"><a href="{% url 'default_download' %}">Download data</a></li>
+	</ul>
+    </div>
+</header>
+<div class="search-container">
+	<label for="start-date">Start Date:</label>
+    <input type="date" id="start-date" name="start-date">
+
+    <label for="end-date">End Date:</label>
+    <input type="date" id="end-date" name="end-date">
+
+    <button class="button" onclick="submitForm()">Submit</button>
+    <input type="text" class="search-bar" placeholder="Search...">
+    <select class="dropdown">
+        <option value="editor_id">Editor ID</option>
+            <option value="job_id">Job ID</option>
+            <option value="error_field">Error Field</option>
+            <option value="error_type">Error Type</option>
+            <option value="error_category">Error Category</option>
+	<option value="Maker Name">Error Category</option>
+
+
+    </select>
+	 
+</div>
+<div class="download-container">
+    <a href="#" class="download-button"><img src="{% url 'image_url_name' 'download.png' %}" alt="Download"></a>
+</div>
+<table class="main-content-table">
+    <tr>
+        <th>Project Name</th>
+        <th>Editor ID</th>
+        <th>Job ID</th>
+        <th>Maker Name</th>
+        <th>Error Field</th>
+        <th>Error Type</th>
+        <th>Error Category</th>
+    </tr>
+    <tr>
+        <td><a href="#">Project 1</a></td>
+        <td>12345</td>
+        <td>67890</td>
+        <td>John Doe</td>
+        <td>Field 1</td>
+        <td>Type A</td>
+        <td>Category 1</td>
+    </tr>
+    <tr>
+        <td><a href="#">Project 2</a></td>
+        <td>54321</td>
+        <td>09876</td>
+        <td>Jane Doe</td>
+        <td>Field 2</td>
+        <td>Type B</td>
+        <td>Category 2</td>
+    </tr>
+</table>
+
+</body>
+</html>

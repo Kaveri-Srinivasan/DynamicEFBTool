@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin</title>
+{% load static %}
+{% include 'ErrorFeedbackApp/header.html' %}
+
+<style>
+ body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: white;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid black;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Divide into two equal columns */
+    gap: 20px; /* Adjust gap between columns */
+    padding: 20px;
+}
+
+.left-table {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px;
+}
+
+.right-table {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th,
+table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+    
+}
+.dropdown {
+    width: 100px;
+    padding: 5px;
+}
+
+.main-content-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.main-content-table th,
+.main-content-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+.menu-bar ul li.selected a {
+    color: #274554;
+    font-weight: bold; /* Example: make the text bold */
+}
+.search-container {
+    padding:2px;
+    display: flex;
+    justify-content: flex-left;
+    align-items: flex-left;
+}
+
+.search-bar {
+    width: 300px;
+    padding: 5px;
+    margin-right: auto;
+	margin-left:20px;
+}
+
+.search-container label {
+    font-size: 15px;
+    margin-right: 10px;
+	margin-top: 5px;
+	margin-left: 10px;
+}
+
+.search-container input[type="date"] {
+    width: 150px;
+    height: auto;
+    font-size: 18px;
+    margin-right: 10px;
+	
+}
+
+.search-container button {
+    width: 100px;
+    height: auto;
+    font-size: 18px;
+    border-radius: 5px;
+    margin-right: 20px;
+	background: linear-gradient(to right, #B5D558, #42748D); 
+        color: white;
+        border: none;
+        cursor: pointer;
+    transition: background-color 0.3s;
+	
+}
+
+.search-container button:hover {
+    background-color: #0056b3;
+}
+
+</style>
+</head>
+<body>
+<header>
+	
+ <div class="menu-bar">
+    <ul>
+        <li class="selected"><a href="{% url 'Admin_home' %}">Home</a></li>
+        <li><a href="{% url 'Admin_user' %}">User Management</a></li>
+        <li><a href="{% url 'Admin_project' %}">Project Management</a></li>
+        <li><a href="{% url 'Admin_download' %}">Report</a></li>
+    </ul>
+    </div>
+</header>
+<div class="container">
+    <div class="left-table">
+      
+        <table>
+            <tr>
+                <th>Total Number of Projects</th>
+                <td><span style="font-size: 30px; font-weight: bold; color: green;">{{project_count}}</td>
+            </tr>
+            
+        </table>
+    </div>
+    <div class="right-table">
+                <table>
+            <tr>
+                <th>Total Number of Users</th>
+                <td><span style="font-size: 30px; font-weight: bold; color: green;">{{user_count}}</td>
+            </tr>
+        </table>
+    </div>
+	</div>
+<div class="search-container">
+<input type="text" class="search-bar" placeholder="Search..." onkeyup = "searchTable()">
+	<label for="start-date">Start Date:</label>
+    <input type="date" id="start-date" name="start-date">
+
+    <label for="end-date">End Date:</label>
+    <input type="date" id="end-date" name="end-date">
+
+    <button class="button" onclick="submitForm()">Submit</button>
+    
+    </div>
+
+<table id= "mainTable" class="main-content-table">
+    <tr>
+        <th>Customer</th>
+        <th>Project Name</th>
+	    <th>Total Feedback Count</th>
+        <th>Accepted</th>
+        <th>Rejected</th>
+	<th>Created Date</th>
+    </tr>
+    {% for row in table_data %}
+    <tr>
+         <td>{{ row.Customer }}</td>
+        <td>{{ row.Project_Name }}</td>
+        <td>{{row.Total_Feedback_Count}}</td>
+        <td>{{ row.Accepted }}</td>
+        <td>{{ row.Rejected }}</td>
+	<th>{{row.CreatedDate}}</th>
+    </tr>
+    {% endfor %}
+
+</table>
+<script>
+function submitForm() {
+    var startDate = document.getElementById("start-date").value;
+    var endDate = document.getElementById("end-date").value;
+    filterTableByDate(startDate, endDate);
+}
+
+function filterTableByDate(startDate, endDate) {
+    var table = document.getElementById("mainTable");
+    var rows = table.getElementsByTagName("tr");
+
+    for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        var dateCell = row.getElementsByTagName("td")[3]; // Assuming the date is in the 4th column (index starts from 0)
+        var dateValue = dateCell.textContent || dateCell.innerText;
+        var date = new Date(dateValue);
+
+        if ((startDate === "" || new Date(startDate) <= date) && (endDate === "" || date <= new Date(endDate))) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    }
+}
+
+function searchTable() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.querySelector(".search-bar");
+	console.log(input);
+    filter = input.value.toUpperCase();
+    table = document.getElementById("mainTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td");
+        for (var j = 0; j < td.length; j++) {
+            if (td[j]) {
+                txtValue = td[j].textContent || td[j].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                    break;
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+}
+
+      
+    </script>
+
+</body>
+</html>

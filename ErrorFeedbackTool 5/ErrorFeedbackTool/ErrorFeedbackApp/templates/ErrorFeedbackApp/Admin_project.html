@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+{% load static %}
+{% include 'ErrorFeedbackApp/header.html' %}
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: white;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid black;
+}
+
+.container {
+    padding: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+td a {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.action-button {
+    padding: 10px 20px;
+    background-color: #008000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.menu-bar ul li.selected a {
+    color: #274554;
+    font-weight: bold; /* Example: make the text bold */
+}
+.create-project-button {
+    display: block;
+    width: 200px;
+    margin: 20px auto 10px auto; /* Modified margin */
+    padding: 15px;
+    background: linear-gradient(to right, #B5D558, #42748D);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+	margin
+}
+.create-project-button:hover {
+     background: linear-gradient(to left, #668F66, #295971);
+
+    transform: translateY(-1px); 
+}</style>
+</head>
+<body>
+<header>
+  <div class="menu-bar">
+    <ul>
+        <li ><a href="{% url 'Admin_home' %}">Home</a></li>
+        <li ><a href="{% url 'Admin_user' %}">User Management</a></li>
+        <li class="selected"><a href="{% url 'Admin_project' %}">Project Management</a></li>
+        <li><a href="{% url 'Admin_download' %}">Report</a></li>
+    </ul>
+    </div>
+
+</header>
+
+<div class="container">
+	<a href="{% url 'create_project' %}" class="create-project-button">+ Create New Project</a>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Project Name</th>
+                <th>No. of Assigned Users</th>
+                <th>Asign Users</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in table_data %}
+    		<tr>
+        		<td><a href="#">{{ row.Project_Name }}</a></td>
+        		<td>{{row.num_of_users}}</td>
+			<td><button class="action-button" onclick="deleteProject()">Assign</button></td>
+    		</tr>
+    		{% endfor %}
+
+                    </tbody>
+    </table>
+
+   
+</div>
+
+<script>
+function deleteProject() {
+    
+    console.log("delete project clicked");
+}
+</script>
+
+</body>
+</html>

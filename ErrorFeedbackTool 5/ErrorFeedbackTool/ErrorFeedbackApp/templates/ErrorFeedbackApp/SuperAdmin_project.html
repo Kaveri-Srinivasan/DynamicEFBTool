@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Management</title>
+    {% load static %}
+    {% include 'ErrorFeedbackApp/header.html' %}
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: white;
+            padding: 10px;
+            text-align: center;
+            position: relative;
+            border-bottom: 1px solid black;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            /* Divide into two equal columns */
+            gap: 20px;
+            /* Adjust gap between columns */
+            padding: 20px;
+        }
+
+        .search-container {
+            padding: 10px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .search-bar {
+            width: 300px;
+            padding: 5px;
+            margin-right: 10px;
+        }
+
+        .dropdown {
+            width: 150px;
+            padding: 5px;
+        }
+
+        .main-content-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .main-content-table th,
+        .main-content-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .menu-bar ul li.selected a {
+            color: #274554;
+            font-weight: bold;
+            /* Example: make the text bold */
+        }
+	td a {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+}
+            </style>
+</head>
+
+<body>
+    <header>
+        <div class="menu-bar">
+            <ul>
+                <li><a href="{% url 'SuperAdmin_home' %}">Home</a></li>
+                <li><a href="{% url 'SuperAdmin_user' %}">User Management</a></li>
+                <li class="selected"><a href="{% url 'SuperAdmin_project' %}">Project Management</a></li>
+                <li><a href="{% url 'center_management' %}">Center Management</a></li>
+                <li><a href="{% url 'SuperAdmin_download' %}">Report</a></li>
+            </ul>
+        </div>
+    </header>
+    <div class="search-container" onkeyup="searchTable()">
+        <input type="text" class="search-bar" placeholder="Search...">
+        
+    </div>
+
+    <table id="mainTable" class="main-content-table">
+        <tr>
+            <th>Center</th>
+            <th>Customer</th>
+            <th>Admin</th>
+            <th>Project Name</th>
+            <th>Number of Assigned Users</th>
+         </tr>
+       {% for row in table_data %}
+    <tr>
+        <td>{{ row.Center }}</td>
+        <td>{{ row.Customer }}</td>
+        <td>
+            <ul>
+                {% for admin in row.Admins %}
+                    <li><a href="mailto:{{ admin }}">{{ admin }}</a></li>
+                {% endfor %}
+            </ul>
+        </td>
+        <td>{{ row.Project_Name }}</td>
+         <td>{{ row.num_of_users }}</td>
+       
+    </tr>
+    {% endfor %}
+    </table>
+
+    <script>
+    function searchTable() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.querySelector(".search-bar");
+	console.log(input);
+    filter = input.value.toUpperCase();
+    table = document.getElementById("mainTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td");
+        for (var j = 0; j < td.length; j++) {
+            if (td[j]) {
+                txtValue = td[j].textContent || td[j].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                    break;
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+}
+
+    </script>
+
+</body>
+
+</html>

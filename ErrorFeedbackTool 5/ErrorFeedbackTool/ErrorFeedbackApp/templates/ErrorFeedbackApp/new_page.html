@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Project Fields</title>
+	{% load static %}
+{% include 'ErrorFeedbackApp/header.html' %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        width: 80%;
+        margin: 20px auto;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+    }
+
+    .left-column,
+        .right-column {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc; /* Add border to create lines */
+            border-radius: 5px; /* Add border radius for a better look */
+        }
+
+
+    h3 {
+        color: #333;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    li {
+        margin-bottom: 5px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        color: #555;
+    }
+
+    .button-container {
+        margin-top: 10px;
+    }
+
+    .add {
+        width: 40px;
+        padding: 10px;
+        color: white;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background: linear-gradient(to left, #42748D, #B5D558);
+        margin-bottom: 10px;
+    }
+
+    .submit {
+        width: 150px;
+        padding: 10px;
+        color: white;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background: linear-gradient(to left, #42748D, #B5D558);
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    select  {
+        width: calc(100% - 22px); 
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        margin-bottom: 10px;
+    }
+    input[type="text"]  {
+        width: calc(100% -30px); 
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        margin-bottom: 10px;
+    }
+    button:hover {
+        background: linear-gradient(to left, #335e75, #9bc149);
+        transform: translateY(-1px);
+    }
+    .menu-bar ul li.selected a {
+    color: #274554;
+    font-weight: bold; 
+}
+</style>
+</head>
+<body>
+<header>
+<div class="menu-bar">
+    <ul>
+        <li><a href="{% url 'Admin_home' %}">Home</a></li>
+        <li><a href="{% url 'Admin_user' %}">User Management</a></li>
+        <li class="selected"><a href="{% url 'Admin_project' %}">Project Management</a></li>
+        <li><a href="{% url 'Admin_download' %}">Download Data</a></li>
+    </ul>
+</div>
+</header>
+
+<div class="container">
+<div class="left-column">
+    <h3>Default Fields</h3>
+    <ul id="defaultFields">
+        <li>Editor ID: Email</li>
+        <li>Maker ID: Email</li>
+        <li>Job ID: Integer</li>
+        <li>
+            Error types: <input type="text" id="errorTypeInput" placeholder="Enter error type">
+            <button class="add" onclick="addCustomErrorType()">Add</button>
+        </li>
+        <li id="errorTypesList"></li>
+        <li>
+            Error Fields: <input type="text" id="errorFieldInput" placeholder="Enter error Field">
+            <button class="add" onclick="addCustomErrorField()">Add</button>
+        </li>
+        <li id="errorFieldList"></li>
+        <li>
+            Error Categories: <input type="text" id="errorCategoriesInput" placeholder="Enter error Category">
+            <button class="add" onclick="addCustomErrorCategories()">Add</button>
+        </li>
+        <li id="errorCategoriesList"></li>
+    </ul>
+</div>
+
+<div class="right-column">
+    <h3>Added Fields</h3>
+    <ul id="addedFields">
+        <!-- Added fields will be added dynamically here -->
+    </ul>
+    <div class="button-container">
+        <button class="submit" type="submit">Submit</button>
+    </div>
+</div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        populateAddedFields();
+        document.getElementById("fieldType").addEventListener("change", function () {
+            var textFieldOptions = document.getElementById("textFieldOptions");
+            if (this.value === "text") {
+                textFieldOptions.style.display = "block";
+            } else {
+                textFieldOptions.style.display = "none";
+            }
+        });
+    });
+
+    function populateAddedFields() {
+        var addedFields = document.getElementById("addedFields");
+        const urlParams = new URLSearchParams(window.location.search);
+        const addedFieldsData = JSON.parse(urlParams.get('addedFields'));
+
+        addedFieldsData.forEach(function (field) {
+            var li = document.createElement("li");
+            li.textContent = field;
+
+            var form = document.createElement("form");
+            form.classList.add("fieldTypeForm"); // Adding class instead of id
+            form.innerHTML = `
+                <label for="fieldType">Select Field Type:</label>
+                <select class="fieldType" name="fieldType">
+                    <option value="integer">Integer</option>
+                    <option value="text">Text</option>
+                </select>
+                <div class="textFieldOptions" style="display: none;">
+                    <label for="textOptions">Text Options:</label>
+                    <select class="textOptions" name="textOptions">
+                        <option value="dropdown">Dropdown</option>
+                        <option value="textfield">Text Field</option>
+                    </select>
+                </div>`;
+            
+            li.appendChild(form);
+            addedFields.appendChild(li);
+        });
+    }
+
+    function addCustomErrorType() {
+        var errorTypeInput = document.getElementById("errorTypeInput");
+        var errorType = errorTypeInput.value.trim();
+
+        if (errorType !== "") {
+            var errorTypesList = document.getElementById("errorTypesList");
+            var errorTypes = errorTypesList.textContent.trim();
+
+            if (errorTypes !== "") {
+                errorTypes += ", " + errorType;
+            } else {
+                errorTypes = errorType;
+            }
+
+            errorTypesList.textContent = errorTypes;
+            errorTypeInput.value = "";
+        } else {
+            alert("Please enter an error type.");
+        }
+    }
+
+    function addCustomErrorField() {
+        var errorFieldInput = document.getElementById("errorFieldInput");
+        var errorField = errorFieldInput.value.trim();
+
+        if (errorField !== "") {
+            var errorFieldsList = document.getElementById("errorFieldList");
+            var errorFields = errorFieldsList.textContent.trim();
+
+            if (errorFields !== "") {
+                errorFields += ", " + errorField;
+            } else {
+                errorFields = errorField;
+            }
+
+            errorFieldsList.textContent = errorFields;
+            errorFieldInput.value = "";
+        } else {
+            alert("Please enter an error Field.");
+        }
+    }
+
+    function addCustomErrorCategories() {
+        var errorCategoriesInput = document.getElementById("errorCategoriesInput");
+        var errorCategory = errorCategoriesInput.value.trim();
+
+        if (errorCategory !== "") {
+            var errorCategoriesList = document.getElementById("errorCategoriesList");
+            var errorCategories = errorCategoriesList.textContent.trim();
+
+            if (errorCategories !== "") {
+                errorCategories += ", " + errorCategory;
+            } else {
+                errorCategories = errorCategory;
+            }
+
+            errorCategoriesList.textContent = errorCategories;
+            errorCategoriesInput.value = "";
+        } else {
+            alert("Please enter an error Category.");
+        }
+    }
+</script>
+
+</body>
+</html>

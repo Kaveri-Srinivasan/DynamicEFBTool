@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ErrorFeedbackApp</title>
+{% load static %}
+{% include 'ErrorFeedbackApp/header.html' %}
+
+<style>
+ body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: white;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid black;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Divide into two equal columns */
+    gap: 20px; /* Adjust gap between columns */
+    padding: 20px;
+}
+
+.left-table {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th,
+table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+    
+}
+.dropdown {
+    width: 100px;
+    padding: 5px;
+}
+
+.main-content-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.main-content-table th,
+.main-content-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+.main-content-table td a {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.menu-bar ul li.selected a {
+    color: #274554;
+    font-weight: bold; /* Example: make the text bold */
+}
+.search-container {
+    padding:2px;
+    display: flex;
+    justify-content: flex-left;
+    align-items: flex-left;
+}
+
+.search-bar {
+    width: 300px;
+    padding: 5px;
+    margin-right: 10px;
+	margin-left:20px;
+}
+
+.search-container label {
+    font-size: 15px;
+    margin-right: 10px;
+	margin-top: 5px;
+	margin-left: 10px;
+}
+
+.search-container input[type="date"] {
+    width: 150px;
+    height: auto;
+    font-size: 18px;
+    margin-right: 10px;
+	
+}
+
+.search-container button {
+    width: 100px;
+    height: auto;
+    font-size: 18px;
+    border-radius: 5px;
+    margin-right: 20px;
+	background: linear-gradient(to right, #B5D558, #42748D); 
+        color: white;
+        border: none;
+        cursor: pointer;
+    transition: background-color 0.3s;
+	
+}
+
+.search-container button:hover {
+    background-color: #0056b3;
+}
+</style>
+</head>
+<body>
+<header>
+	
+ <div class="menu-bar">
+    <ul>
+        <li class="selected"><a href="{% url 'default' %}">Home</a></li>
+        <li><a href="{% url 'default_download' %}">Download data</a></li>
+
+	</ul>
+    </div>
+</header>
+<div class="container">
+    <div class="left-table">
+      
+        <table>
+            <tr>
+                <th>Total No. of Assigned projects</th>
+                <td><span style="font-size: 30px; font-weight: bold; color: green;">2</td>
+            </tr>
+            
+        </table>
+    </div>
+    	</div>
+<div class="search-container">
+	<label for="start-date">Start Date:</label>
+    <input type="date" id="start-date" name="start-date">
+
+    <label for="end-date">End Date:</label>
+    <input type="date" id="end-date" name="end-date">
+
+    <button class="button" onclick="submitForm()">Submit</button>
+    <input type="text" class="search-bar" placeholder="Search...">
+    <select class="dropdown">
+        <option value="project_name">Project Name</option>
+	<option value="Accepted">Accepted</option>
+	<option value="Rejected">Rejected</option>
+
+    </select>
+</div>
+
+<table class="main-content-table">
+    <tr>
+        
+        <th>Project Name</th>
+        <th>Accepted</th>
+        <th>Rejected</th>
+    </tr>
+	<tr>
+   <td><a href="{% url 'feedback' %}">Project 1</a></td>
+                <td>5</td>
+                <td>1</td>
+            </tr>
+            <tr>
+           <td><a href="{% url 'acknowledge' %}">Project 2</a></td>
+                        <td>3</td>
+                        <td>8</td>
+<tr>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Error Feedback</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        margin: 20px auto;
+        padding: 20px;
+        background-color: white;
+        border-radius: 5px;
+        width: 100%; 
+        max-width: 1200px; 
+        overflow-x: auto;
+    }
+    .search-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    input[type="text"] {
+        width: calc(100% - 40px);
+        padding: 8px;
+        border-radius: 3px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        margin-right: 10px;
+    }
+    select, button {
+        padding: 8px;
+        border-radius: 3px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        cursor: pointer;
+    }
+    button {
+        background-color: #005266;
+        color: white;
+        border: none;
+    }
+    button:hover {
+        background-color: #004455;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        white-space: nowrap;
+    }
+    th {
+        background-color: #005266;
+        color: white;
+    }
+    button#downloadButton {
+        background-color: #005266; 
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    button#downloadButton:hover {
+        background-color: #0056b3;
+    }
+     button.small {
+        padding: 4px 8px;
+        font-size: 12px; 
+    }
+     button.reject {
+        padding: 4px 8px;
+        font-size: 12px; 
+    }
+    .screenshot-link {
+        color: #007bff;
+        text-decoration: underline; 
+        cursor: pointer;
+    }
+    
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Welcome, {{ username }}</h1>
+ <p>Your Center: {{ center}}</p>
+    <h2>Error Feedback</h2>
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search...">
+        <button type="submit"><i class="fas fa-search"></i></button>
+        <select id="searchField">
+            <option value="editor_id">Editor ID</option>
+            <option value="job_id">Job ID</option>
+            <option value="error_field">Error Field</option>
+            <option value="error_type">Error Type</option>
+            <option value="error_category">Error Category</option>
+        </select>
+	 <button id="downloadButton">Download</button>
+    </div>
+
+    <table id="errorTable">
+        <thead>
+            <tr>
+                <th>Editor ID</th>
+                <th>Job ID</th>
+		<th>maker_name</th>
+                <th>Error Field</th>
+                <th>Error Type</th>
+                <th>Error Category</th>
+                <th>error_2d_count</th>
+		<th>error_3d_count</th>
+		<th>object_id</th>
+		<th>selected_class</th>	
+		<th>correct_class</th>	
+		<th>screenshot_path</th>	
+		<th>audited_date</th>	
+		<th>center_location</th>
+		<th>Acknowledged</th>
+		<th>reason_for_rejection</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for error in error_feedback %}
+    <tr>
+        <td>{{ error.editor_id }}</td>
+        <td>{{ error.job_id }}</td>
+        <td>{{ error.maker_name }}</td>
+        <td>{{ error.error_field }}</td>
+        <td>{{ error.error_type }}</td>
+        <td>{{ error.error_category }}</td>
+        <td>{{ error.error_2d_count }}</td>
+        <td>{{ error.error_3d_count }}</td>
+        <td>{{ error.object_id }}</td>
+        <td>{{ error.selected_class }}</td>
+        <td>{{ error.correct_class }}</td>
+        <td><a href="{% url 'view_screenshot' error.id %}" class="screenshot-link" target="_blank">View Screenshot</a></td>
+        <td>{{ error.Audited_date }}</td>
+        <td>{{ error.center_location }}</td>
+	<td>{{ error.Acknowledged}}</td>
+        <td>{{ error.Reason_for_Rejection}}</td>
+	<td>
+            {% if error.Acknowledged == "Accepted" %}
+                <button class="small" disabled>Accept</button>
+                <button class="reject" disabled>Reject</button>
+            {% elif error.Acknowledged == "Rejected" %}
+                <button class="small" disabled>Accept</button>
+                <button class="reject" disabled>Reject</button>
+            {% else %}
+               <form method="POST" action="{% url 'update_status' %}" data-error-id="{{ error.id }}">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{ error.id }}">
+        <input type="hidden" name="status" value="Accepted">
+        <button class="small" onclick="handleAcceptButtonClick('{{ error.id }}')">Accept</button>
+    </form>
+    <button class="reject" onclick="handleRejectButtonClick('{{ error.id }}')">Reject</button>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
+    </table>
+</div>
+
+<script>
+document.querySelector(".search-container button").addEventListener("click", function() {
+    searchErrorFeedback();
+});
+document.getElementById("downloadButton").addEventListener("click", function() {
+    // Redirect to the URL for downloading
+    window.location.href = "{% url 'home' %}";
+});
+function handleRejectButtonClick(errorId) {
+    var reason = prompt("Please enter the reason for rejection:");
+    if (reason !== null && reason !== "") {
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = "{% url 'update_status_reject' %}";
+        form.setAttribute('data-error-id', errorId);
+        form.innerHTML = `
+            {% csrf_token %}
+            <input type="hidden" name="id" value="${errorId}">
+            <input type="hidden" name="status" value="Rejected">
+            <input type="hidden" name="reason" value="${reason}">
+        `;
+        document.body.appendChild(form);
+        form.submit();
+    }
+}function searchErrorFeedback() {
+    var searchInput = document.getElementById("searchInput").value;
+    var searchField = document.getElementById("searchField").value;
+
+
+    window.location.href = "{% url 'database_search' %}?field=" + searchField + "&query=" + searchInput;
+}
+window.addEventListener('pageshow', function(event) {
+        if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+            // Page was loaded from the cache or back/forward button was used
+            // Reload the page to refresh the data
+            window.location.reload();
+        }
+    });
+</script>
+
+</body>
+</html>

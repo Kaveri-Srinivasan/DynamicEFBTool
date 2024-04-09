@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperAdmin</title>
+{% load static %}
+{% include 'ErrorFeedbackApp/header.html' %}
+   
+<style>
+/* Apply global styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: white;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid black;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 20px; 
+    padding: 20px 10px; 
+}
+
+form {
+    width: 100%;
+    padding: 20px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="checkbox"] {
+    width: calc(70% - 12px); 
+    padding: 7px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 15px;
+}
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th,
+td {
+    border: 1px solid #ccc;
+    padding: 7px;
+    text-align: left;
+    font-size: 18px;
+    font-weight: normal;
+}
+
+/* Style the submit button */
+input[type="submit"] {
+    width: 100px;
+    padding: 10px;
+    background: linear-gradient(to right, #B5D558, #42748D);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+.menu-bar ul li.selected a {
+    color: #274554;
+    font-weight: bold; 
+}
+.add-role-section {
+    height: auto; 
+    
+
+}
+
+.add-role-section h2 {
+    margin-bottom: 10px; 
+    
+}
+
+.permissions-heading {
+    font-weight: bold;
+}
+
+.permissions-list {
+    margin-top: 5px;
+}
+.permissions-list label {
+    display: inline-block;
+    margin-bottom: 5px;
+}
+.permissions-list input[type="checkbox"] {
+    display: inline-block;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+</style>
+</head>
+<body>
+<header>
+	
+<div class="menu-bar">
+    <ul>
+        <li><a href="{% url 'SuperAdmin_home' %}">Home</a></li>
+        <li class="selected"><a href="{% url 'SuperAdmin_user' %}">User Management</a></li>
+        <li><a href="{% url 'SuperAdmin_project' %}">Project Management</a></li>
+        <li><a href="{% url 'center_management' %}">Center Management</a></li>
+        <li><a href="{% url 'SuperAdmin_download' %}">Download Data</a></li>
+    </ul>
+</div>
+</header>
+
+<div class="container">
+    <div>
+        <h1>Roles Management</h1>
+
+        <h2>Default Roles</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Role Name</th>
+                    <th>Permissions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Super Admin</td>
+                    <td>All over management</td>
+                </tr>
+                <tr>
+                    <td>Admin</td>
+                    <td>center level management</td>
+                </tr>
+                <tr>
+                    <td>Editor </td>
+                    <td>Give Feedback</td>
+                </tr>
+                <tr>
+                    <td>Maker </td>
+                    <td>Acknowledge Feedback</td>
+                </tr>
+            </tbody>
+            
+        </table>
+    </div>
+    <div class="add-role-section">
+        <h2>Add New Role</h2>
+        <form method="post">
+            {% csrf_token %}
+            <label for="role_name">Role Name:</label>
+            <input type="text" id="role_name" name="role_name">
+            <br>
+            <table>
+                <tr>
+                    <td>
+                        <div class="permissions-heading">Menu Bar Items:</div>
+                    </td>
+                    <td>
+                        <div class="permissions-heading">Other Permissions:</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="permissions-list">
+                            <label for="permission1">User Management</label>
+                            <input type="checkbox" id="permission1" name="permissions" value="Permission 1">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="permissions-list">
+                            <label for="permission4">Center Level Management</label>
+                            <input type="checkbox" id="permission4" name="permissions" value="Permission 4">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="permissions-list">
+                            <label for="permission2">Project Management</label>
+                            <input type="checkbox" id="permission2" name="permissions" value="Permission 2">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="permissions-list">
+                            <label for="permission5">Give Feedback</label>
+                            <input type="checkbox" id="permission5" name="permissions" value="Permission 5">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="permissions-list">
+                            <label for="permission3">Download Data</label>
+                            <input type="checkbox" id="permission3" name="permissions" value="Permission 3">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="permissions-list">
+                            <label for="permission6">Acknowledge Feedback</label>
+                            <input type="checkbox" id="permission6" name="permissions" value="Permission 6">
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    
+            
+            <!-- Add more permission checkboxes as needed -->
+            <br>
+            <input type="submit" value="Add Role">
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

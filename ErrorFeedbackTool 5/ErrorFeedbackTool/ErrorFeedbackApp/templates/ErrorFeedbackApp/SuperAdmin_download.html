@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperAdmin</title>
+{% load static %}
+{% include 'ErrorFeedbackApp/header.html' %}
+
+<style>
+ body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: white;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid black;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Divide into two equal columns */
+    gap: 20px; /* Adjust gap between columns */
+    padding: 20px;
+}
+
+.main-content-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.main-content-table th,
+.main-content-table td {
+    border: 1px solid #ccc;
+    padding: 7px;
+    text-align: left;
+	font-size:15px;
+    font-weight: normal;
+}
+.menu-bar ul li.selected a {
+    color: #274554;
+    font-weight: bold; /* Example: make the text bold */
+}
+td a {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.search-container {
+    padding:2px;
+    display: flex;
+    justify-content: flex-left;
+    align-items: flex-left;
+	margin-top:10px;
+}
+
+.search-bar {
+    width: 300px;
+    padding: 5px;
+    margin-right:auto;
+	margin-left:20px;
+}
+
+.search-container label {
+    font-size: 15px;
+    margin-right: 10px;
+	margin-top: 5px;
+	margin-left: 10px;
+}
+
+.search-container input[type="date"] {
+    width: 150px;
+    height: auto;
+    font-size: 18px;
+    margin-right: 10px;
+	
+}
+
+.search-container button {
+    width: 100px;
+    height: auto;
+    font-size: 18px;
+    border-radius: 5px;
+    margin-right: 20px;
+	background: linear-gradient(to right, #B5D558, #42748D); 
+        color: white;
+        border: none;
+        cursor: pointer;
+    transition: background-color 0.3s;
+	
+}
+
+.search-container button:hover {
+    background-color: #0056b3;
+}
+.download-container {
+    display: flex;
+    align-items: center;
+}
+
+.download-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto; 
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
+    background-color: #497A8A; 
+    transition: background-color 0.3s; 
+	 border: none;     padding: 0; 
+}
+
+.download-button:hover {
+    background-color: #B5D558; 
+	transform: translateY(-2px); 
+
+}
+
+.download-button img {
+    width: 20px; /* Adjust icon size as needed */
+    height: 20px; /* Adjust icon size as needed */
+}
+</style>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
+<header>
+	
+ <div class="menu-bar">
+    <ul>
+        <li ><a href="{% url 'SuperAdmin_home' %}">Home</a></li>
+        <li><a href="{% url 'SuperAdmin_user' %}">User Management</a></li>
+        <li><a href="{% url 'SuperAdmin_project' %}">Project Management</a></li>
+        <li><a href="{% url 'center_management' %}">Center Management</a></li>
+	 <li class="selected"><a href="{% url 'SuperAdmin_download' %}">Report</a></li>
+	
+    </ul>
+    </div>
+</header>
+<div class="search-container">
+<input type="text" class="search-bar" placeholder="Search..." onkeyup="searchTable()">
+	<label for="start-date">Start Date:</label>
+    <input type="date" id="start-date" name="start-date">
+
+    <label for="end-date">End Date:</label>
+    <input type="date" id="end-date" name="end-date">
+
+    <button class="button" onclick="submitForm()">Submit</button>
+    	 
+</div>
+<div class="download-container">
+    	<button onclick="downloadFilteredRows()" class="download-button"><img src="{% url 'image_url_name' 'download.png' %}" alt="Download"></button>
+</div>
+<table id="mainTable" class="main-content-table">
+    <tr>
+        <th>Center</th>
+        <th>Customer</th>
+        <th>Project Name</th>
+        <th>Created Date</th>
+        <th>Capturing fields</th>
+        
+    </tr>
+    {% for row in table_data %}
+    <tr>
+        <td>{{ row.Center }}</td>
+        <td>{{ row.Customer }}</td>
+        <td><a href="#">{{ row.Project_Name }}</td>
+          <td>{{row.CreatedDate}}</td>
+	<td>{{ row.FieldCount}}</td>      
+    </tr>
+    {% endfor %}
+
+</table>
+<script>
+
+function submitForm() {
+    var startDate = document.getElementById("start-date").value;
+    var endDate = document.getElementById("end-date").value;
+    filterTableByDate(startDate, endDate);
+}
+
+function filterTableByDate(startDate, endDate) {
+    var table = document.getElementById("mainTable");
+    var rows = table.getElementsByTagName("tr");
+
+    for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        var dateCell = row.getElementsByTagName("td")[3]; // Assuming the date is in the 4th column (index starts from 0)
+        var dateValue = dateCell.textContent || dateCell.innerText;
+        var date = new Date(dateValue);
+
+        if ((startDate === "" || new Date(startDate) <= date) && (endDate === "" || date <= new Date(endDate))) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    }
+}
+function downloadFilteredRows() {
+    var table = document.getElementById("mainTable");
+    var rows = table.getElementsByTagName("tr");
+    var filteredRowsData = [];
+
+    // Extract header row
+    var headerRow = [];
+    var headerCells = rows[0].getElementsByTagName("th");
+    for (var i = 0; i < headerCells.length; i++) {
+        headerRow.push(headerCells[i].textContent);
+    }
+    filteredRowsData.push(headerRow);
+
+    // Extract filtered rows data
+    for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        if (row.style.display !== "none") {
+            var rowData = [];
+            var cells = row.getElementsByTagName("td");
+            for (var j = 0; j < cells.length; j++) {
+                rowData.push(cells[j].textContent);
+            }
+            filteredRowsData.push(rowData);
+        }
+    }
+
+    // Convert to Excel format and download
+    var wb = XLSX.utils.book_new();
+    var ws = XLSX.utils.aoa_to_sheet(filteredRowsData);
+    XLSX.utils.book_append_sheet(wb, ws, "Data");
+    XLSX.writeFile(wb, "data.xlsx");
+}
+
+function searchTable() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.querySelector(".search-bar");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("mainTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td");
+        for (var j = 0; j < td.length; j++) {
+            if (td[j]) {
+                txtValue = td[j].textContent || td[j].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                    break;
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+}
+</script>
+
+</body>
+</html>

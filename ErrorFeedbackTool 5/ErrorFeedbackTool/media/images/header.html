@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+    }
+    header {
+    background: white;
+    padding: 10px;
+    text-align: center;
+	 position: relative;
+	border-bottom: 1px solid black; 
+}
+
+header h1 {
+    background: linear-gradient(   #B5D558, #42748D);
+    -webkit-background-clip: text; 
+    color: transparent; 
+	 margin: 0;
+
+}
+   
+        .logo {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 200px; /* Adjust width as needed */
+        height: auto; /* Maintain aspect ratio */
+    }
+.user-info {
+    position: absolute;
+    top: 2px;
+    right: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.user-role {
+    margin-top: 1px;
+    font-size: 10px;
+}
+
+.login-icon {
+    width: 40px; /* Adjust as needed */
+    height: auto;
+}
+
+.menu-bar {
+    background-color: #f0f0f0; /* Grey color */
+    padding: 10px;
+}
+
+.menu-bar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menu-bar ul li {
+    display: inline;
+    margin-right: 20px; /* Adjust spacing between menu items */
+	 
+}
+
+.menu-bar ul li a {
+    text-decoration: none;
+    color: #333; /* Dark grey color for menu links */
+ 
+}
+
+.menu-bar ul li a:hover {
+    color: #000; /* Change color on hover */
+}
+
+.username {
+    margin-right: 60px; 
+	margin-top: 10px;
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    max-width: calc(100% - 70px); /* Calculate max-width based on available space */
+}
+
+.vertical-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 60px; /* Adjust as needed */
+    width: 1px; /* Adjust as needed */
+    background-color: black; /* Change color to black */
+    height: 190%; /* Make the height same as the header */
+}
+
+</style>
+</head>
+<body>
+<header>
+	  <div class="user-info">
+        <span class="username">{{ username }}</span>
+        <div class="vertical-line"></div>
+        
+    </div>
+     <img src="{% url 'image_url_name' 'logo.png' %}" alt="Company Logo" class="logo">
+    <h1>Nextwealth</h1>	
+    </header><div class="user-info">
+        
+        <img src="{% url 'image_url_name' 'login.png' %}" alt="Login Icon" class="login-icon">
+	<span class="user-role">{{ role }}</span>
+    </div>
+ 

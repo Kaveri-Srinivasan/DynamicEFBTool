@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+    }
+    header {
+    background: white;
+    padding: 10px;
+    text-align: center;
+	 position: relative;
+	border-bottom: 1px solid black; 
+}
+
+header h1 {
+    background: linear-gradient(   #B5D558, #42748D);
+    -webkit-background-clip: text; 
+    color: transparent; 
+	 margin: 0;
+
+}
+   
+        .logo {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 200px; 
+        height: auto; 
+    }
+.user-info {
+    position: absolute;
+    top: 2px;
+    right: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.user-role {
+    margin-top: 1px;
+    font-size: 10px;
+}
+.login-icon {
+    width: 40px; /* Adjust as needed */
+    height: auto;
+}
+
+.menu-bar {
+    background: linear-gradient(to right, #B5D558, #42748D);
+    padding: 10px;
+	text-align: left;
+}
+
+.menu-bar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menu-bar ul li {
+    display: inline;
+    margin-right: 20px; 
+}
+
+.menu-bar ul li a {
+    text-decoration: none;
+    color: white;
+ 
+}
+
+.menu-bar ul li a:hover {
+    color: #000; 
+}
+
+.username {
+    margin-right: 65px; 
+	margin-top: 10px;
+   
+}
+
+.menu-list {
+    background: white;
+    padding: 20px;
+    display: none; 
+    position: absolute;
+
+    top: 60px; 
+    right: 30px; 
+    z-index: 1; 
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3); 
+    transition: all 0.3s ease; 
+    width: 250px;
+    color: black;
+}
+
+.menu-list .user-info {
+     display: flex;
+    flex-direction: column;
+    align-items: center;
+	text-align:center;
+ width: 100%;
+position: relative; 
+}
+
+
+
+.menu-list .menu-username {
+    font-size: 16px;
+    font-weight: bold;
+    padding-bottom: 30px;
+    text-align: center;
+	margin-top:10px:
+	margin-bottom: 10px; 
+}
+
+.menu-list ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.menu-bar ul li:after {
+    content: '\25BC';    position: absolute;
+    top: 50%;
+    right: -10px; /* Adjust as needed */
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.menu-list ul li {
+    margin-bottom: 10px;
+	text-align: center; 
+}
+.menu-list ul li a:hover {
+    background-color: #f0f0f0; 
+}
+.menu-bar ul li:hover:after {
+    opacity: 1; 
+}
+.menu-list ul li:last-child {
+    margin-bottom: 0;
+}
+.menu-list ul li:first-child {
+    margin-top: 10px;
+}
+
+.loginavatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(to right, #B5D558, #42748D);
+    color: white;
+    font-size: 20px;
+	 display: flex;
+	justify-content: center;
+    align-items: center;
+	margin-top: 0px;
+    position: relative; 
+}
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(to right, #B5D558, #42748D);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    margin-right: 10px; 
+    margin-top: 40px; 
+    position: relative;
+}
+
+.horizontal-line {
+    border-top: 1px solid #274554; /* Color and style of the line */
+    width: 115% ;
+   margin-left: -15px;
+	margin-top: -15px;
+	margin-bottom: 25px;
+}
+.vertical-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 54px;
+    width: 1px; 
+    background-color: black; 
+    height: 190%; 
+}
+.loginavatar.clicked {
+    border: 4px solid #ccc;     
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+
+}
+</style>
+</head>
+<body>
+<header>
+	  <div class="user-info">
+        <span class="username">{{ username }}</span>
+        <div class="vertical-line"></div>
+        
+    </div>
+     <img src="{% url 'image_url_name' 'logo.png' %}" alt="Company Logo" class="logo">
+    <h1>NextWealth</h1>	
+    </header><div class="user-info">
+	<div class="loginavatar" onclick="toggleMenu()"><span id="first-letterr"></span></div>
+	
+
+	{% if role == 'Admin' or role == 'SuperAdmin' %}
+                <span class="user-role">{{ role }}</span>
+            {% endif %}
+    </div>
+	<div id="menulist" class="menu-list" style="display:none;">
+    <div class="user-info">
+        <div class="avatar"><span id="first-letter"></span></div>
+		<hr class="horizontal-line">
+		<span class="menu-username">Hi, {{ username }}</span>
+	    </div>
+    <ul>
+	
+        <li>{{ email }}</li>
+        <li>{{ center }}</li>
+        <li><a href="{% url 'change_password' %}">Change Password</a></li>
+        <li><a href="#" onclick="logout()">Logout</a></li>
+    </ul>
+</div>
+
+</header>
+
+<script>
+
+function toggleMenu() {
+    var menu = document.getElementById("menulist");
+	var loginavatar = document.querySelector(".loginavatar");
+    if (menu.style.display === "none") {
+        menu.style.display = "block";
+	loginavatar.classList.add("clicked");
+    } else {
+        menu.style.display = "none";
+	loginavatar.classList.remove("clicked");
+    }
+}
+function logout() {
+   var confirmLogout = confirm("Are you sure you want to logout?");
+    if (confirmLogout) {
+        // Redirect to the login page
+        window.location.href = "/login";
+	 history.pushState(null, null, window.location.href);
+    }
+
+}
+document.addEventListener('DOMContentLoaded', function() {
+    var username = "{{ username }}";
+    var firstLetter = username.charAt(0).toUpperCase();
+    document.getElementById('first-letter').textContent = firstLetter;
+document.getElementById('first-letterr').textContent = firstLetter;
+});
+document.addEventListener('click', function(event) {
+    var menu = document.getElementById("menulist");
+    var loginavatar = document.querySelector(".loginavatar");
+    var isClickInsideMenu = menu.contains(event.target);
+    var isClickOnAvatar = loginavatar.contains(event.target);
+
+    if (!isClickInsideMenu && !isClickOnAvatar) {
+        menu.style.display = "none";
+	loginavatar.classList.remove("clicked");
+    }
+});
+
+</script>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperAdmin</title>
+{% load static %}
+{% include 'ErrorFeedbackApp/header.html' %}
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+header {
+    background: white;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid black;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th,
+table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+    
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px; 
+    padding: 20px;
+}
+
+.left-table {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px;
+	display: flex;
+	justify-content: center; 
+    align-items: center;
+}
+
+.right-table {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px;
+}
+
+.search-container {
+    padding:2px;
+    display: flex;
+    justify-content: left;
+    align-items: left;
+}
+
+.search-bar {
+    width: 300px;
+    padding: 5px;
+    margin-left: 30px;
+}
+
+.dropdown {
+    width: 100px;
+    padding: 5px;
+}
+
+.main-content-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.main-content-table th,
+.main-content-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+.menu-bar ul li.selected a {
+    color: #274554;
+    font-weight: bold; 
+}
+</style>
+</head>
+<body>
+	<header>	
+		<div class="menu-bar">
+    		<ul>
+        		<li class="selected"><a href="{% url 'SuperAdmin_home' %}">Home</a></li>
+                <li><a href="{% url 'SuperAdmin_user' %}">User Management</a></li>
+                <li><a href="{% url 'SuperAdmin_project' %}">Project Management</a></li>
+                <li><a href="{% url 'center_management' %}">Center Management</a></li>
+                <li><a href="{% url 'SuperAdmin_download' %}">Report</a></li>
+            </ul>
+        </div>
+    </header>
+    <div class="container">
+        <div class="left-table">
+            <table>
+                <tr>
+                    <th><span style="font-size: 30px; font-weight: bold;">Total Number of Projects</th>
+                    <td><span style="font-size: 40px; font-weight: bold; color: green;">{{ project_count }}</td>
+                </tr>
+                <tr>
+                    <th><span style="font-size: 30px; font-weight: bold;">Total Number of Users</th>
+                    <td><span style="font-size: 40px; font-weight: bold; color: green;">{{user_count}}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="right-table">
+    <table>
+        <tr>
+            <th>Center</th>
+            <th>No. of Projects</th>
+        </tr>
+        {% for project_info in project_count_by_location %}
+        <tr>
+            <td><span style=" font-weight: bold;">{{ project_info.Location }}</span></td>
+            <td><span style=" font-weight: bold; color: green;">{{ project_info.num_projects }}</span></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+    </div>
+    <div class="search-container">
+        <input type="text" class="search-bar" placeholder="Search..." onkeyup="searchTable()">
+     </div>
+    <table id="mainTable" class="main-content-table">
+        <tr>
+            <th>Centers</th>
+            <th>Customer</th>
+            <th>Project Name</th>
+            <th>Total Feedback Count</th>
+            <th>Accepted</th>
+            <th>Rejected</th>
+        </tr>
+        {% for row in table_data %}
+    <tr>
+        <td>{{ row.Center }}</td>
+        <td>{{ row.Customer }}</td>
+        <td>{{ row.Project_Name }}</td>
+        <td>{{row.Feedback_Count}}</td>
+        <td>{{ row.Accepted }}</td>
+        <td>{{ row.Rejected }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+<script>
+function searchTable() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.querySelector(".search-bar");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("mainTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td");
+        for (var j = 0; j < td.length; j++) {
+            if (td[j]) {
+                txtValue = td[j].textContent || td[j].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                    break;
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+}
+</script>
+</body>
+</html>

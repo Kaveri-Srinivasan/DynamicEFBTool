@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registration</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+    }
+    header {
+        background-color: #005266;
+        color: white;
+        padding: 10px;
+        text-align: center;
+    }
+    .registration-container {
+        margin: 50px auto;
+        width: 300px;
+        background-color: white;
+        border-radius: 5px;
+        padding: 20px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        position: relative; /* Position relative for absolute positioning */
+    }
+    .registration-container h2 {
+        margin-top: 0;
+    }
+    .registration-container label {
+        position: relative;
+        padding-right: 20px;
+    }
+    .mandatory-star {
+        position: absolute;
+        top: 0;
+        right: 0;
+        color: red;
+        font-size: 12px;
+    }
+    .error-message {
+        color: red;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+    .registration-form input[type="file"],
+    .registration-form button {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 3px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+    }
+    .registration-form button {
+        background-color: #005266;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+<header>
+    <h1>Nextwealth Registration</h1>
+</header>
+<div class="registration-container">
+    <h2>Register</h2>
+    <form class="registration-form" action="{% url 'registration' %}" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+        <label for="excel_file">Upload Excel File<span class="mandatory-star">*</span></label>
+        <input type="file" id="excel_file" name="excel_file" accept=".xls,.xlsx" required>
+        <div class="error-message" id="excelFileError"></div>
+        <button type="submit">Register</button>
+    </form>
+
+
+<script>
+document.getElementById("excel_file").addEventListener("change", function() {
+    var fileInput = document.getElementById("excel_file");
+    var fileError = document.getElementById("excelFileError");
+    if (fileInput.files.length === 0) {
+        fileError.textContent = "Please select a file.";
+    } else {
+        fileError.textContent = "";
+    }
+});
+</script>
+
+</body>
+</html>

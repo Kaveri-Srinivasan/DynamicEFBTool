@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Project</title>
+{% load static %}
+{% include 'ErrorFeedbackApp/header.html' %}
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+.select-container {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.select-container select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.select-container::after {
+    content: "\25BC";
+    font-size: 20px;
+    color: #555;
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+header {
+    background: white;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid black;
+}
+
+
+.form-group {
+    margin-bottom: 20px;
+}
+.menu-bar ul li.selected a {
+    color: #274554;
+    font-weight: bold; /* Example: make the text bold */
+}
+label {
+    display: block;
+    font-weight: bold;
+}
+
+.input-field {
+    width: 70%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.form-container {
+    display: none; /* Initially hidden */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 9999; /* Ensure form appears on top */
+}
+.close-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.next-button,
+.back,
+.finish,
+.button {
+    padding: 15px 30px;
+    width: 150px;
+    height: 30px;
+     background: linear-gradient(to left, #42748D, #B5D558);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+	line-height: 5px; /* Removed the space here */
+margin-right: 450px; 
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between; /* Distribute space between elements */
+    margin-top: 20px; /* Adjust margin as needed */
+}
+ .container {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px;
+        }
+.left-table,
+        .right-table {
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            margin-right: 20px;
+        }
+
+        .left-table table,
+        .right-table table {
+            width: 100%;
+        }
+
+        .left-table th,
+        .left-table td,
+        .right-table th,
+        .right-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .left-table th,
+        .right-table th {
+            background-color: #f2f2f2;
+        }
+
+</style>
+</head>
+<body>
+<header>
+    <div class="menu-bar">
+    <ul>
+        <li ><a href="{% url 'Admin_home' %}">Home</a></li>
+        <li ><a href="{% url 'Admin_user' %}">User Management</a></li>
+        <li class="selected"><a href="{% url 'Admin_project' %}">Project Management</a></li>
+        <li><a href="{% url 'Admin_download' %}">Download Data</a></li>
+    </ul>
+    </div>
+
+</header>
+
+<div class="container">
+    <div class="left-table">
+        <h2>Project Details</h2>
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Project Name:</td>
+                <td><input type="text" id="project_name" name="project_name" required></td>
+            </tr>
+            <tr>
+                <td>Customer Name:</td>
+                <td><input type="text" id="customer_name" name="customer_name" required></td>
+            </tr>
+            <tr>
+                <td>Number of Fields:</td>
+                <td><input type="number" id="number_of_fields" name="number_of_fields" min="0" max="20" required></td>
+		
+            </tr>
+		<tr>
+	 	 <td><div id="field-dropdowns"></div></td>
+			<td><button type="button" class="next-button" onclick="confirmAddFields()">Add/Proceed</button></td>
+		</tr>
+        </table>
+	
+
+    </div>
+    <div class="right-table">
+        <h2>Default Fields</h2>
+        <table>
+            <tr>
+                <td>Field Name</td>
+		<td>Field Type</td>
+            </tr>
+		<tr>
+            <td><label for="editor_id">Editor ID:</label></td>
+		<td><input type="email" id="editor_email" name="editor_email" class="input-field" placeholder="Email" disabled></td>
+            </tr>
+              <tr>
+		  <td><label for="maker_id">Maker ID:</label></td>
+		<td><input type="email" id="editor_email" name="editor_email" class="input-field" placeholder="Email" disabled></td>
+            </tr>
+          <tr>
+		  <td><label for="Job_id">Job ID:</label></td>
+		<td><input type="email" id="editor_email" name="editor_email" class="input-field" placeholder="Integer" disabled></td>
+            </tr>
+		<tr>
+		  <td><label for="Error_types">Error types:</label></td>
+		
+            </tr>
+		<tr>
+		  <td><label for="Error_Fields">Error Fields:</label></td>
+		
+            </tr>
+		<tr>
+		  <td><label for="Error_Categories">Error Categories:</label></td>
+		            </tr>
+        </table>
+    </div>
+</div>
+       <div class="form-container" id="formContainer">
+    <h2>Add new Item to option</h2>
+    <button class="close-button" onclick="toggleForm()">×</button>
+   
+        <input type="text" id="Add_item" name="AddItem" class="input-field" required>
+        <div style="display: flex; justify-content: center; margin-top: 20px;">
+            <button type="submit" class="button" onclick="addItemToDropdown()">Add</button>
+        </div>
+   
+</div>
+ 
+	
+	
+	
+	<div class="button-container" style="display: none;">
+    <button type="button" class="back" onclick="back()">Back</button>
+  
+    <button type="button" class="finish" onclick="finish()" >Next</button>
+
+
+
+<script>
+var formVisible = false;
+var addedFields = [];
+function confirmAddFields() {
+	var confirmation;
+	var proceed;
+    var project_name = document.getElementById("project_name").value.trim();
+    var customer_name = document.getElementById("customer_name").value.trim();
+    var number_of_fields = document.getElementById("number_of_fields").value.trim();
+    if (project_name === "" || customer_name === "" || number_of_fields === "") {
+        alert("Please fill in all fields.");
+        return;
+    }
+    
+	var numFields = document.getElementById("number_of_fields").value;
+	if(numFields > 0 ){
+		confirmation = confirm("Are you sure you want to add fields?");
+	}
+	else{
+		proceed = confirm("Are you sure you want to Proceed?");
+	}
+    if (numFields > 0 && confirmation) {
+        
+        var fieldDropdowns = document.getElementById("field-dropdowns");
+        fieldDropdowns.innerHTML = ""; 
+	for (var i = 1; i <= numFields; i++) { 
+            var label = document.createElement("label");
+            label.innerHTML = "Field " + i + ":<span style='color:red;'>*</span>";
+
+            var input = document.createElement("input");
+            input.type = "text";
+            input.name = "field_" + i;
+            input.className = "input-field";
+
+            fieldDropdowns.appendChild(label);
+            fieldDropdowns.appendChild(input);
+		
+        }
+
+
+     
+
+        // Disable input fields and hide next button
+        document.getElementById("project_name").disabled = true;
+        document.getElementById("customer_name").disabled = true;
+        document.getElementById("number_of_fields").disabled = true;
+        var nextButton = document.querySelector(".next-button");
+        nextButton.style.display = "none";
+        document.querySelector(".button-container").style.display = "block";
+
+    }
+else if(proceed){
+	document.getElementById("project_name").disabled = true;
+        document.getElementById("customer_name").disabled = true;
+        document.getElementById("number_of_fields").disabled = true;
+        var nextButton = document.querySelector(".next-button");
+        nextButton.style.display = "none";
+        document.querySelector(".button-container").style.display = "block";
+
+}
+}
+function finish() {
+	 var project_name = document.getElementById("project_name").value.trim();
+    var customer_name = document.getElementById("customer_name").value.trim();
+    var numFields = document.getElementById("number_of_fields").value.trim();
+	addedFields = [];
+
+        for (var i = 1; i <= numFields; i++) {
+            var input = document.querySelector("#field-dropdowns input[name='field_" + i + "']");
+            addedFields.push(input.value);
+        }
+	var queryParams = "?project_name=" + encodeURIComponent(project_name) +
+                          "&customer_name=" + encodeURIComponent(customer_name) +
+                          "&addedFields=" + encodeURIComponent(JSON.stringify(addedFields));
+
+        // Redirect to the new page with query parameters
+        window.location.href = "new_page" + queryParams;
+
+
+        }
+
+
+
+function toggleForm() {
+	
+    var formContainer = document.getElementById("formContainer");
+    if (formVisible) {
+        formContainer.style.display = "none";
+        formVisible = false;
+    } else {
+        formContainer.style.display = "block";
+        formVisible = true;
+    }
+}
+function back() {
+    var confirmation = confirm("Are you sure you want to go back and edit project details?");
+    if (confirmation) {
+     document.getElementById("project_name").disabled = false;
+    document.getElementById("customer_name").disabled = false;
+    document.getElementById("number_of_fields").disabled = false;
+    document.getElementById("field-dropdowns").innerHTML = "";
+    var nextButton = document.querySelector(".next-button");
+    nextButton.style.display = "block";
+    document.querySelector(".button-container").style.display = "none";
+	addedFields = [];
+    }
+}
+function toggleForm() {
+    var formContainer = document.getElementById("formContainer");
+    if (formVisible) {
+        formContainer.style.display = "none";
+        formVisible = false;
+    } else {
+        formContainer.style.display = "block";
+        formVisible = true;
+    }
+}
+
+function addItemToDropdown() {
+    var newItemValue = document.getElementById("Add_item").value.trim();
+    if (newItemValue !== "") {
+                var selectDropdown = document.querySelector("#field-dropdowns select");
+
+               var option = document.createElement("option");
+        option.value = newItemValue;
+        option.textContent = newItemValue;
+
+        // Append the new option to the select element
+        selectDropdown.appendChild(option);
+
+        // Update the dropdown options array (fields)
+        fields.push(newItemValue);
+
+        // Clear the input field after adding the option
+        document.getElementById("Add_item").value = "";
+
+        // Hide the form container after adding the item
+        toggleForm();
+    }
+}
+
+document.getElementById("number_of_fields").addEventListener("input", function() {
+    var value = this.value;
+    if (!(/^\d*$/.test(value))) {
+        this.value = value.slice(0, -1);
+    }
+    if (value < 0 || value > 20) {
+        this.value = "";
+    }
+});
+
+
+</script>
+
+</body>
+</html>

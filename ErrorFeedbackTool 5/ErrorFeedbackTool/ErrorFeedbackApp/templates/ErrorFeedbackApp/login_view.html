@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+{% load static %}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+    }
+    header {
+    background: white;
+    padding: 10px;
+    text-align: center;
+}
+
+header h1 {
+    background: linear-gradient(   #B5D558, #42748D);
+    -webkit-background-clip: text; 
+    color: transparent; 
+	 margin: 0;
+}
+   
+    .login-container {
+        margin: 50px auto;
+        width: 300px;
+        background-color: #ffffff; /* White background for login container */
+        border-radius: 5px;
+        padding: 20px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        position: relative; /* Position relative for absolute positioning */
+    }
+    .login-container h2 {
+        margin-top: 0;
+    }
+    .login-container label {
+        position: relative;
+        padding-right: 20px;
+        color: #266181; /* Text color */
+    }
+    .mandatory-star {
+        position: absolute;
+        top: 0;
+        right: 0;
+        color: red;
+        font-size: 12px;
+    }
+    .error-message {
+        color: red;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+    .login-form input[type="text"],
+    .login-form input[type="password"],
+    .login-form button {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 3px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+    }
+    .login-form button {
+        background: linear-gradient(to right, #B5D558, #42748D); /* Gradient from light green to blue */
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    .logo {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 200px; /* Adjust width as needed */
+        height: auto; /* Maintain aspect ratio */
+    }
+	.password-toggle {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+<header>
+     <img src="{% url 'image_url_name' 'logo.png' %}" alt="Company Logo" class="logo">
+
+
+    <h1>Nextwealth</h1>
+</header>
+<div class="login-container">
+    <h2>Login</h2>
+    <form class="login-form" action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <label for="username">Email<span class="mandatory-star">*</span></label>
+        <input type="text" id="username" name="username" placeholder="Email" required minlength="5">
+        <div class="error-message" id="usernameError"></div>
+        <label for="password">Password<span class="mandatory-star">*</span></label>
+        <div style="position: relative;">
+            <input type="password" id="password" name="password" placeholder="Password" required minlength="8">
+            <span class="password-toggle" id="passwordToggle" onclick="togglePasswordVisibility()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                    <path fill="none" d="M0 0h24v24H0z"/>
+                    <path d="M12 4C7.03 4 3 8.06 3 12s4.03 8 9 8 9-4.06 9-8-4.03-8-9-8zm0 14c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm0-10c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zM12 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+                </svg>
+            </span>
+        </div>
+        <div class="error-message" id="passwordError"></div>
+        <button type="submit">Login</button>
+	 <a href="{% url 'password_reset' %}">Forgot Password?</a>
+    </form>
+</div>
+
+<script>
+document.getElementById("username").addEventListener("input", function() {
+    var usernameInput = document.getElementById("username");
+    var usernameError = document.getElementById("usernameError");
+    if (usernameInput.validity.tooShort) {
+        usernameError.textContent = "Username must be at least 5 characters.";
+    } else {
+        usernameError.textContent = "";
+    }
+});
+function togglePasswordVisibility() {
+    var passwordInput = document.getElementById("password");
+    var passwordToggle = document.getElementById("passwordToggle");
+
+   if (passwordInput.type === "password") {
+    passwordInput.type = "text";
+    passwordToggle.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 15.5c1.38 0 2.5-1.12 2.5-2.5s-1.12-2.5-2.5-2.5-2.5 1.12-2.5 2.5 1.12 2.5 2.5 2.5zM12 4C7.03 4 3 8.06 3 12s4.03 8 9 8 9-4.06 9-8-4.03-8-9-8zm0 14c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm0-10c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/></svg>';
+} else {
+    passwordInput.type = "password";
+    passwordToggle.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 4C7.03 4 3 8.06 3 12s4.03 8 9 8 9-4.06 9-8-4.03-8-9-8zm0 14c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm0-10c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zM12 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>';
+}
+}
+
+
+
+document.getElementById("password").addEventListener("input", function() {
+    var passwordInput = document.getElementById("password");
+    var passwordError = document.getElementById("passwordError");
+    if (passwordInput.validity.tooShort) {
+        passwordError.textContent = "Password must be at least 8 characters.";
+    } else {
+        passwordError.textContent = "";
+    }
+});
+</script>
+
+</body>
+</html>

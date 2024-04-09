@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ErrorFeedbackApp</title>
+{% load static %}
+{% include 'ErrorFeedbackApp/header.html' %}
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+header {
+    background: white;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid black;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th,
+table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+    
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px; 
+    padding: 20px;
+}
+
+.left-table {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px;
+}
+
+.right-table {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px;
+}
+
+.search-container {
+    padding:2px;
+    display: flex;
+    justify-content: left;
+    align-items: left;
+}
+
+.search-bar {
+    width: 300px;
+    padding: 5px;
+    margin-right: 10px;
+}
+
+.dropdown {
+    width: 100px;
+    padding: 5px;
+}
+
+.main-content-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.main-content-table th,
+.main-content-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+.menu-bar ul li.selected a {
+    color: #274554;
+    font-weight: bold; 
+}
+.button-group {
+    display: flex; /* Ensure flexbox layout */
+    align-items: center; /* Center items vertically */
+}
+
+.button {
+    padding: 8px 20px;     
+	 background: linear-gradient(to left, #42748D, #B5D558);
+    color: white;
+    border: none;
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer;
+    margin-right: 10px;
+	
+    display: inline-block;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Box shadow for depth */
+    transition: background-color 0.3s, transform 0.3s;
+}
+.close-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+.button:hover {
+     background: linear-gradient(to left, #668F66, #295971);
+
+    transform: translateY(-1px); 
+}
+.button-container {
+    margin-top: 10px;
+display: flex; /* Ensure flexbox layout */
+    justify-content: space-between; 
+}
+#formContainer2 {
+    width: 600px; /* Adjust width as needed */
+    height: 400px; /* Adjust height as needed */
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    overflow: auto; /* Add scrollbar */
+}
+
+#formContainer2 h2 {
+    margin-top: 0;
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+#formContainer2 label {
+    font-weight: bold;
+    display: block;
+    width: 150px; /* Adjust width as needed */
+    float: left;
+}
+
+#formContainer2 input[type="text"],
+#formContainer2 input[type="password"],
+#formContainer2 input[type="email"],
+#formContainer2 input[type="date"] {
+    width: calc(100% - 170px); /* Adjust width to fit alongside labels */
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#formContainer2 div {
+    clear: both;
+    overflow: hidden;
+}
+
+#formContainer2 button[type="submit"] {
+    padding: 8px 30px;
+    background-color: #497A8A;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto 0; /* Adjust margins as needed */
+}
+
+#formContainer2 button[type="submit"]:hover {
+    background: linear-gradient(to left, #B5D558, #42748D);
+}
+
+</style>
+</head>
+<body>
+	<header>	
+		<div class="menu-bar">
+    		<ul>
+        		<li class="selected"><a href="{% url 'default' %}">Home</a></li>
+        <li><a href="{% url 'default_download' %}">Download data</a></li>
+            </ul>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="left-table">
+            <table>
+                    <tr><th>Name of Project</th></tr>
+                    <tr><td><span style="font-size: 50px; font-weight: bold; color: green;">Project1</td></tr>
+               
+             </table>
+        </div>
+        <div class="right-table">
+            <table>
+                <tr>
+                    <th>Feedbacks Given</th>
+			<td><span style="font-size: 50px; font-weight: bold; color: green; ">27</td>
+                    
+                </tr>
+                <tr>
+                    <th>Feedbacks Rejected</th>
+                    <td><span style="font-size: 30px; font-weight: bold; color: green;">5</td>
+                </tr>
+               
+            </table>
+        </div>
+    </div>
+    <div class="button-container">
+        <div class="search-container">
+            <input type="text" class="search-bar" placeholder="Search...">
+            <select class="dropdown">
+                <option value="username">username</option>
+                <option value="Email">Email</option>
+                <option value="Role">Role</option>
+                <option value="Projects_assigned">Projects_assigned</option>
+            
+            </select>
+        </div>
+        <div class="button-group">
+            <button class="button" onclick="givefeedback()">Give Feedback</button>
+        </div>
+    </div>
+    <div class="form-container" id="formContainer2" style="display: none;">
+        <h2>Create Feedback</h2>
+        <button class="close-button" onclick="givefeedback()">×</button>
+        <form id="addUserForm" onsubmit="return validateAddUserForm()" method="post">
+            {% csrf_token %}
+            <div>
+                <label for="job_id">Job ID:</label>
+                <input type="text" id="job_id" name="job_id" required>
+            </div>
+            <div>
+                <label for="maker_name">Maker Name:</label>
+                <input type="text" id="maker_name" name="maker_name" required>
+            </div>
+            <div>
+                <label for="error_field">Error Field:</label>
+                <input type="text" id="error_field" name="error_field" required>
+            </div>
+            <div>
+                <label for="error_type">Error Type:</label>
+                <input type="text" id="error_type" name="error_type" required>
+            </div>
+            <div>
+                <label for="error_category">Error Category:</label>
+                <input type="text" id="error_category" name="error_category" required>
+            </div>
+            <div>
+                <label for="error_2d_count">Error 2D Count:</label>
+                <input type="text" id="error_2d_count" name="error_2d_count" required>
+            </div>
+            <div>
+                <label for="error_3d_count">Error 3D Count:</label>
+                <input type="text" id="error_3d_count" name="error_3d_count" required>
+            </div>
+            <div>
+                <label for="object_id">Object ID:</label>
+                <input type="text" id="object_id" name="object_id" required>
+            </div>
+            <div>
+                <label for="selected_class">Selected Class:</label>
+                <input type="text" id="selected_class" name="selected_class" required>
+            </div>
+            <div>
+                <label for="correct_class">Correct Class:</label>
+                <input type="text" id="correct_class" name="correct_class" required>
+            </div>
+            <div>
+                <label for="screenshot_path">Screenshot Path:</label>
+                <input type="text" id="screenshot_path" name="screenshot_path" required>
+            </div>
+            <div>
+                <label for="received_date">Received Date:</label>
+                <input type="date" id="received_date" name="received_date" required>
+            </div>
+            <div>
+                <label for="production_date">Production Date:</label>
+                <input type="date" id="production_date" name="production_date" required>
+            </div>
+            <div>
+                <button type="submit" class="button">Submit</button>
+            </div>
+        </form>
+    </div>
+    
+    <table class="main-content-table">
+        <tr>
+            <th>project name</th>
+        <th>Editor ID</th>
+        <th>Job ID</th>
+        <th>Maker Name</th>
+        <th>Error Field</th>
+        <th>Error Type</th>
+        <th>Error Category</th>
+        <th>Error 2D Count</th>
+        <th>Error 3D Count</th>
+        <th>Object ID</th>
+        <th>Selected Class</th>
+        <th>Correct Class</th>
+        <th>Screenshot Path</th>
+        <th>Audited Date</th>
+        <th>Received Date</th>
+        <th>Production Date</th>
+        <th>Acknowledged</th>
+        <th>Reason for Rejection</th>
+        </tr>
+	<tr>
+        <td>Project1</td>
+        <td>123</td>
+        <td>456</td>
+        <td>John Doe</td>
+        <td>Error Field 1</td>
+        <td>Error Type A</td>
+        <td>Error Category 1</td>
+        <td>5</td>
+        <td>3</td>
+        <td>789</td>
+        <td>Class A</td>
+        <td>Class B</td>
+        <td><a href="#">/path/to/screenshot1</a></td>
+        <td>2024-03-01</td>
+        <td>2024-03-05</td>
+        <td>2024-03-10</td>
+        <td>Yes</td>
+        <td>N/A</td>
+    </tr>
+    <tr>
+        <td>Project2</td>
+        <td>789</td>
+        <td>012</td>
+        <td>Jane Doe</td>
+        <td>Error Field 2</td>
+        <td>Error Type B</td>
+        <td>Error Category 2</td>
+        <td>8</td>
+        <td>2</td>
+        <td>345</td>
+        <td>Class C</td>
+        <td>Class D</td>
+        <td><a href="#">/path/to/screenshot2</a></td>
+        <td>2024-03-02</td>
+        <td>2024-03-06</td>
+        <td>2024-03-11</td>
+        <td>No</td>
+        <td>Incorrect classification</td>
+    </tr>
+           </table>
+<script>
+    function givefeedback() {
+    var formContainer = document.getElementById("formContainer2");
+        if (formContainer.style.display === "none") {
+        formContainer.style.display = "block";
+	addformVisible = true;
+
+        } else {
+        formContainer.style.display = "none";
+        addformVisible = false;
+
+    }
+
+}
+</script>
+</body>
+</html>

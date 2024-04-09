@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin</title>
+{% load static %}
+{% include 'ErrorFeedbackApp/header.html' %}
+
+<style>
+ body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: white;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid black;
+}
+
+
+.main-content-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.main-content-table th,
+.main-content-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+.menu-bar ul li.selected a {
+    color: #274554;
+    font-weight: bold; /* Example: make the text bold */
+}
+.search-bar {
+    width: 300px;
+    padding: 5px;
+    margin-right: 10px;
+	margin-left:20px;
+}
+.dropdown {
+    width: 100px;
+    padding: 5px;
+}
+
+.button-container {
+    margin-top: 10px;
+display: flex; /* Ensure flexbox layout */
+    justify-content: space-between; 
+}
+.button-group {
+    display: flex; /* Ensure flexbox layout */
+    align-items: center; /* Center items vertically */
+}
+
+.button {
+    padding: 8px 18px;     
+	 background: linear-gradient(to left, #42748D, #B5D558);
+    color: white;
+    border: none;
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer;
+    margin-right: 10px;
+	
+    display: inline-block;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Box shadow for depth */
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.button:hover {
+     background: linear-gradient(to left, #668F66, #295971);
+
+    transform: translateY(-1px); 
+}
+.form-container {
+    display: none; /* Initially hidden */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 9999; /* Ensure form appears on top */
+}
+
+.close-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+#formContainer2 {
+    width: 400px;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+}
+
+#formContainer2 h2 {
+    margin-top: 0;
+    font-size: 24px;
+    color: #333;
+}
+
+#formContainer2 label {
+    font-weight: bold;
+}
+
+#formContainer2 input[type="text"],
+#formContainer2 input[type="password"],
+#formContainer2 input[type="email"] {
+    width: calc(100% - 40px);
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#formContainer2 button[type="submit"] {
+    padding: 8px 18px;
+    background-color: #497A8A;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#formContainer2 button[type="submit"]:hover {
+    background: linear-gradient(to left, #B5D558, #42748D);
+}
+</style>
+</head>
+<body>
+<header>
+	
+ <div class="menu-bar">
+    <ul>
+        <li ><a href="{% url 'Admin_home' %}">Home</a></li>
+        <li class="selected"><a href="{% url 'Admin_user' %}">User Management</a></li>
+        <li><a href="{% url 'Admin_project' %}">Project Management</a></li>
+        <li><a href="{% url 'Admin_download' %}">Download Data</a></li>
+    </ul>
+    </div>
+</header>
+<div class="button-container">
+    <div class="search-container" onkeyup="searchTable()">
+        <input type="text" class="search-bar" placeholder="Search...">
+            </div>
+    <div class="button-group">
+        <button class="button" onclick="toggleForm()">Import Excel</button>
+        <button class="button" onclick="toggleAddUserForm()">Add User</button>
+    </div>
+</div>
+<div class="form-container" id="formContainer" >
+	
+	 <h2>Register List of Users</h2>
+	
+    <button class="close-button " onclick="toggleForm()">×</button>
+    <form id="uploadForm" onsubmit="return validateForm()" action="{% url 'registration' %}" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+        <label for="excel_file">Upload Excel File</span></label>
+        <input type="file" id="excelFile" name="excelFile" accept=".xls,.xlsx" required>
+        <div class="error-message" id="excelFileError"></div>
+	
+
+        <div style="display: flex; justify-content: center; margin-top: 20px;">
+            <button type="submit" class="button">Submit</button>
+        </div>
+    </form>
+</div>
+<div class="form-container" id="formContainer2" style="display: none;">
+    <h2>Add User</h2>
+    <button class="close-button" onclick="toggleAddUserForm()">×</button>
+    <form id="addUserForm"  action="{% url 'add_user' %}" onsubmit="return validateAddUserForm()" method="post">
+        {% csrf_token %}
+        <div>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div>
+            <label for="password">Password:</label>
+            <input type="text" id="password" name="password" required>
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+               <div>
+            <button type="submit" class="button">Add User</button>
+        </div>
+    </form>
+</div>
+<table id="mainTable" class="main-content-table">
+    <tr>
+        <th>username</th>
+        <th>Email</th>
+	<th> Mobile No</th>
+        <th>Projects_assigned</th>
+	<th>Action</th>
+    </tr>
+	{% for row in user_list %}
+    <tr>
+         <td>{{ row.Username }}</td>
+        <td>{{ row.Email }}</td>
+        <td>{{row.MobileNo}}</td>
+        <td>{{ row.ProjectAssigned }}</td>
+	<td><button class="button" onclick="deleteUser('{{ row.Email }}')">delete</button></td>
+    </tr>
+    {% endfor %}
+
+          
+                
+</tr>
+
+</table>
+<script>
+var formVisible = false;
+var addformVisible = false;
+
+function toggleForm() {
+    var formContainer = document.getElementById("formContainer");
+        if (formContainer.style.display === "none") {
+        formContainer.style.display = "block";
+	formVisible=true;
+        } else {
+        formContainer.style.display = "none";
+        formVisible = false;
+    }
+
+}
+function toggleAddUserForm() {
+    var formContainer = document.getElementById("formContainer2");
+        if (formContainer.style.display === "none") {
+        formContainer.style.display = "block";
+	addformVisible = true;
+
+        } else {
+        formContainer.style.display = "none";
+        addformVisible = false;
+
+    }
+
+}
+function deleteUser(Email) {
+    if (confirm("Are you sure you want to delete this user?")) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "{% url 'delete_user' %}", true);
+        
+        // Add CSRF token
+        var csrftoken = getCookie('csrftoken');
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        // User deleted successfully
+                        // Perform any UI updates as needed
+                        location.reload();
+                    } else {
+                        alert("Failed to delete user: " + response.error);
+                    }
+                } else {
+                    alert("Failed to delete user. Please try again later.");
+                }
+            }
+        };
+        
+        var formData = new FormData();
+        formData.append('Email', Email);
+
+        xhr.send(formData);
+    }
+}
+
+// Function to get CSRF token from cookie
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function validateForm() {
+    var fileInput = document.getElementById("excelFile");
+    var fileError = document.getElementById("excelFileError");
+    var fileName = fileInput.value;
+    var idxDot = fileName.lastIndexOf(".") + 1;
+    var extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+    if (extFile !== "xls" && extFile !== "xlsx") {
+        fileError.textContent = "Please select a valid Excel file (XLS or XLSX).";
+        return false;
+    }
+    return true;
+}
+
+document.getElementById("excelFile").addEventListener("change", function() {
+    var fileInput = document.getElementById("excelFile");
+    var fileError = document.getElementById("excelFileError");
+    if (fileInput.files.length === 0) {
+        fileError.textContent = "Please select a file.";
+    } else {
+        fileError.textContent = "";
+    }
+});
+document.addEventListener("click", function(event) {
+	 
+
+    var formContainer = document.getElementById("formContainer");
+    if (formVisible && event.target !== formContainer && !formContainer.contains(event.target)) {
+	  event.preventDefault();
+        event.stopPropagation();
+        
+            }
+	 var addformContainer = document.getElementById("formContainer2");
+    if (addformVisible && event.target !== addformContainer && !addformContainer.contains(event.target)) {
+	  event.preventDefault();
+        event.stopPropagation();
+        
+            }
+});
+function displayAlerts() {
+    {% for message in messages %}
+        alert("{{ message }}");
+    {% endfor %}
+}
+displayAlerts();
+function searchTable() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.querySelector(".search-bar");
+	console.log(input);
+    filter = input.value.toUpperCase();
+    table = document.getElementById("mainTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td");
+        for (var j = 0; j < td.length; j++) {
+            if (td[j]) {
+                txtValue = td[j].textContent || td[j].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                    break;
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+}
+
+      
+    </script>
+
+</body>
+</html>

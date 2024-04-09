@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Center Management</title>
+{% load static %}
+{% include 'ErrorFeedbackApp/header.html' %}
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+.search-container {
+    padding: 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.search-bar {
+    width: 300px;
+    padding: 5px;
+    margin-right: 10px;
+}
+.container {
+    padding: 20px;
+}
+
+.menu-bar ul li.selected a {
+    color: #274554;
+    font-weight: bold;
+}
+
+.header {
+    background: white;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid black;
+}
+
+.center-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+
+.add-center-button {
+    padding: 10px 20px;
+    background: linear-gradient(to left, #42748D, #B5D558);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+.add-center-button:hover {
+    background: linear-gradient(to left, #668F66, #295971);
+
+    transform: translateY(-1px);
+}
+button {
+            padding: 8px 18px;     
+            background: linear-gradient(to left, #42748D, #B5D558);
+            color: white;
+            border: none;
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer;
+            margin-right: 10px;
+            
+            display: inline-block;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Box shadow for depth */
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+                background: linear-gradient(to left, #668F66, #295971);
+
+                transform: translateY(-1px); 
+        }
+
+
+</style>
+</head>
+<body>
+
+<header class="header">
+    
+	 <div class="menu-bar">
+    <ul>
+        <li><a href="{% url 'SuperAdmin_home' %}">Home</a></li>
+        <li><a href="{% url 'SuperAdmin_user' %}">User Management</a></li>
+        <li><a href="{% url 'SuperAdmin_project' %}">Project Management</a></li>
+        <li class="selected"><a href="{% url 'center_management' %}">Center Management</a></li>
+	 <li><a href="{% url 'SuperAdmin_download' %}">Report</a></li>
+    </ul>
+    </div>
+
+</header>
+<div class="search-container">
+    <input type="text" class="search-bar" placeholder="Search..." onkeyup="searchTable()">
+</div>
+<div class="container">
+    <h2>List of Centers</h2>
+    
+    <table id="mainTable" class="main-content-table">
+    <tbody>
+        {% for center in Centers %}
+        <tr>
+            <td>{{ center }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+    <button class="add-center-button" onclick="showAddCenterForm()">Add Center</button>
+
+    <!-- Add Center Form (Initially Hidden) -->
+    <div id="addCenterForm" style="display: none;">
+        <h2>Add Center</h2>
+        <form>
+            <label for="centerName">Center Name:</label>
+            <input type="text" id="centerName" name="centerName" required>
+            <button type="button" onclick="addCenter()">Submit</button>
+        </form>
+    </div>
+</div>
+
+<script>
+function showAddCenterForm() {
+    var addCenterForm = document.getElementById("addCenterForm");
+    addCenterForm.style.display = "block";
+}
+
+function addCenter() {
+    var centerName = document.getElementById("centerName").value.trim();
+    if (centerName === "") {
+        alert("Please enter a center name.");
+        return;
+    }
+
+    // Perform AJAX request to add the center to the database
+    // Here you would typically use JavaScript to send a request to your server-side code (e.g., Django view)
+    // which would then handle the database insertion and return a response indicating success or failure.
+
+    // For demonstration purposes, let's just display an alert indicating that the center has been added.
+    alert("Center '" + centerName + "' added successfully.");
+
+    // Clear the input field and hide the form
+    document.getElementById("centerName").value = "";
+    document.getElementById("addCenterForm").style.display = "none";
+
+    // You may also want to update the center list on the page with the newly added center.
+}
+function searchTable() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.querySelector(".search-bar");
+	console.log(input);
+    filter = input.value.toUpperCase();
+    table = document.getElementById("mainTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td");
+        for (var j = 0; j < td.length; j++) {
+            if (td[j]) {
+                txtValue = td[j].textContent || td[j].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                    break;
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+}
+
+</script>
+
+</body>
+</html>
